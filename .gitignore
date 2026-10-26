@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+work/
+playwright-report/
+test-results/
+together-backup-*.json
+together-tyler-*.csv
+together-maddie-*.csv
