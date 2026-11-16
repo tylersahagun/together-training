@@ -5,7 +5,9 @@ import WorkoutKit
 struct ContentView: View {
     @State private var manager = WorkoutKitSyncManager()
     @State private var selecting = false
+    @State private var building = false
     @State private var confirming = false
+    @State private var clearing = false
     @State private var preview: WorkoutPlan?
     private let example = WorkoutItem(
         id: UUID(uuidString: "8B7B7562-F0BD-49F5-8196-188E8A38B290")!, date: "Example", title: "Strength session",
@@ -27,6 +29,11 @@ struct ContentView: View {
                         .font(.subheadline).foregroundStyle(.secondary)
                     Button("Import weekly plan", systemImage: "folder") { selecting = true }
                     Text(manager.message).font(.footnote).foregroundStyle(.secondary)
+                }
+                Section("Create your week") {
+                    Button("Build a workout", systemImage: "plus.circle") { building = true }
+                    Button("Add test walk", systemImage: "figure.walk") { Task { await addTestWalk() } }
+                    Text("Test walk is an example; it will not be scheduled until you confirm.").font(.caption).foregroundStyle(.secondary)
                 }
                 Section("Explore the preview") {
                     NavigationLink {
@@ -63,10 +70,13 @@ struct ContentView: View {
                     Section {
                         Button("Schedule week on Apple Watch") { confirming = true }.disabled(manager.busy)
                         Text("Workouts are scheduled by day. Existing workouts on these dates are listed above.").font(.footnote).foregroundStyle(.secondary)
+                        Button("Clear this week from the app", role: .destructive) { clearing = true }
                     }
                 }
             }
             .navigationTitle("Workout Sync")
+            .task { await manager.restore(); if manager.payload == nil && manager.shouldLoadExample { await addTestWalk() } }
+            .sheet(isPresented: $building) { WorkoutBuilderView(manager: manager) }
             .fileImporter(isPresented: $selecting, allowedContentTypes: [.json]) { result in
                 switch result {
                 case .success(let url): Task { await manager.load(url) }
@@ -76,8 +86,25 @@ struct ContentView: View {
             .confirmationDialog("Schedule this week?", isPresented: $confirming, titleVisibility: .visible) {
                 Button("Schedule \(manager.plans.count) workouts") { Task { await manager.schedule() } }
             } message: { Text("Existing workouts on these dates: \(manager.conflicts.count). Existing workouts with different IDs are not removed.") }
+            .confirmationDialog("Clear this week?", isPresented: $clearing, titleVisibility: .visible) {
+                Button("Clear week", role: .destructive) { manager.clearDraft() }
+            } message: { Text("This removes the saved draft from this app. It does not remove workouts already scheduled in Workout.") }
             .sheet(item: $preview) { plan in WorkoutPreviewSheet(plan: plan) }
         }
+    }
+
+    private func addTestWalk() async {
+        if manager.payload?.workouts.contains(where: { $0.title == "Test: short walk" }) == true { manager.message = "The test walk is already in your week."; return }
+        let calendar = Calendar(identifier: .gregorian)
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        let d = calendar.dateComponents([.year, .month, .day], from: tomorrow)
+        let date = String(format: "%04d-%02d-%02d", d.year!, d.month!, d.day!)
+        let sample = WorkoutItem(id: UUID(), date: date, title: "Test: short walk", activity: "walking", location: "outdoor", kind: "custom", steps: [
+            PlanStep(purpose: "warmup", name: "Easy walk", goal: "time", seconds: 120, heartRateZone: nil),
+            PlanStep(purpose: "work", name: "Steady walk", goal: "time", seconds: 300, heartRateZone: nil),
+            PlanStep(purpose: "cooldown", name: "Slow breathing", goal: "time", seconds: 180, heartRateZone: nil)
+        ])
+        do { try await manager.add(sample) } catch { manager.message = error.localizedDescription }
     }
 }
 
