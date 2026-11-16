@@ -6,3 +6,5 @@ test-results/
 together-backup-*.json
 together-tyler-*.csv
 together-maddie-*.csv
+__pycache__/
+ios/WorkoutSync.xcodeproj/
