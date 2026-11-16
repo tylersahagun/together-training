@@ -1,0 +1,923 @@
+{
+  "protocol_rules": [
+    {
+      "rule_id": "specification_interpretation_and_workoutkit_validation",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "running",
+        "weight_lifting",
+        "bodyweight",
+        "golf",
+        "golf_practice",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Apply to every generated workout",
+        "duration_minutes": null,
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Interpret null parameters as unspecified or not applicable; allocation rules constrain weekly volume rather than creating extra sessions"
+      },
+      "biomechanical_constraint": "Synthesis of canonical Huberman/Galpin protocols paired with explicit golf and WorkoutKit programming adaptations.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Use an optional WorkoutStep after checking activity and goal support.",
+        "work_block": "Check CustomWorkout.supportsActivity, supportsGoal, and supportsAlert on watchOS; store exercise selection, loads, repetitions, and technique cues in step titles/application metadata.",
+        "recovery_block": "Use supported time goals; WorkoutKit has no native repetition-count goal.",
+        "cooldown": "Provide application-guided timers when the intended modality or segment is unsupported; never silently substitute running for another activity."
+      },
+      "source_rationale": "Apple's CustomWorkout documentation requires runtime capability checks for activity types, goals, and alerts before scheduling."
+    },
+    {
+      "rule_id": "zone2_weekly_volume",
+      "category": "endurance",
+      "modality_applicability": [
+        "running",
+        "golf"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "2-4 sessions, totalling 150-200 minutes (aim toward 180-200 min as tolerated)",
+        "duration_minutes": {
+          "min": 30,
+          "max": 75
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Zone 2 (conversational effort; nasal breathing when comfortable)"
+      },
+      "biomechanical_constraint": "Count walked golf rounds toward the weekly total only for minutes where heart-rate data confirms sustained Zone 2 effort; exclude cart riding, pauses, and tempo/HIIT work.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min easy jog, open or time goal (excluded from Zone 2 total unless heart rate qualifies)",
+        "work_block": "Single time-goal step with a Zone 2 heart-rate alert",
+        "recovery_block": "None",
+        "cooldown": "3-5 min walk, then 3-5 min slow exhale-emphasized breathing"
+      },
+      "source_rationale": "Steady sub-threshold work builds mitochondrial and capillary density and supports recovery from harder sessions without adding meaningful fatigue."
+    },
+    {
+      "rule_id": "long_endurance_session",
+      "category": "endurance",
+      "modality_applicability": [
+        "running"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "1",
+        "duration_minutes": {
+          "min": 60,
+          "max": 75
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Zone 2 continuous endurance (jog, or hike / weighted-vest walk as a substitute)"
+      },
+      "biomechanical_constraint": "Use run-walk intervals if needed to preserve mechanics and stay within Zone 2.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min easy jog",
+        "work_block": "60-75 min time-goal step with a Zone 2 heart-rate alert",
+        "recovery_block": "None",
+        "cooldown": "5 min walk, then post_workout_downshift"
+      },
+      "source_rationale": "One long continuous effort per week builds the aerobic endurance base that shorter sessions cannot."
+    },
+    {
+      "rule_id": "moderate_cardio_tempo",
+      "category": "endurance",
+      "modality_applicability": [
+        "running"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "1",
+        "duration_minutes": {
+          "min": 30,
+          "max": 35
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "75-80% of all-out effort (Zone 3-4, steady and hard)"
+      },
+      "biomechanical_constraint": "Drop this session first in weeks with 2 golf rounds before dropping any resistance session.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min easy jog",
+        "work_block": "30-35 min time-goal step with a heart-rate range alert at tempo effort",
+        "recovery_block": "None",
+        "cooldown": "5 min easy jog or walk, then 3-5 min slow breathing"
+      },
+      "source_rationale": "A sustained hard-but-submaximal effort trains cardiovascular capacity at an intensity between Zone 2 and all-out work."
+    },
+    {
+      "rule_id": "hiit_sprint_session",
+      "category": "endurance",
+      "modality_applicability": [
+        "running"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "1 (mutually exclusive with vo2max_long_intervals_alternative)",
+        "duration_minutes": {
+          "min": 4,
+          "max": 8
+        },
+        "sets": {
+          "min": 8,
+          "max": 12
+        },
+        "reps": {
+          "min": 1,
+          "max": 1
+        },
+        "rest_seconds": {
+          "min": 10,
+          "max": 10
+        },
+        "intensity_target": "20-30 s all-out per round, reaching max heart rate; if running, cap stride effort near 95% to protect the hamstrings"
+      },
+      "biomechanical_constraint": "Do not overstride at top speed; a bike or rower is the lower-risk substitute. Doubles as the week's second (indirect) leg stimulus.",
+      "workoutkit_segment_mapping": {
+        "warmup": "10 min easy jog with 2-3 short build-ups",
+        "work_block": "Interval block, 8-12 iterations: 20-30 s time-goal work step",
+        "recovery_block": "10 s time-goal recovery step inside each iteration",
+        "cooldown": "5 min walk, then 3-5 min slow breathing"
+      },
+      "source_rationale": "Brief all-out efforts once a week drive heart rate to maximum, providing the primary stimulus for VO2 max."
+    },
+    {
+      "rule_id": "vo2max_long_intervals_alternative",
+      "category": "endurance",
+      "modality_applicability": [
+        "running"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "1, in place of hiit_sprint_session (never both in one week)",
+        "duration_minutes": {
+          "min": 16,
+          "max": 32
+        },
+        "sets": {
+          "min": 4,
+          "max": 4
+        },
+        "reps": {
+          "min": 1,
+          "max": 1
+        },
+        "rest_seconds": {
+          "min": 180,
+          "max": 240
+        },
+        "intensity_target": "4 min at the hardest sustainable pace (about 90-95% max HR, RPE 8-9/10), 1:1 work to rest"
+      },
+      "biomechanical_constraint": "Preserve consistent mechanics and repeatable pace across all 4 repetitions rather than sprinting the first rep.",
+      "workoutkit_segment_mapping": {
+        "warmup": "10 min easy jog",
+        "work_block": "Interval block, 4 iterations: 4 min time-goal work step with a high heart-rate range alert",
+        "recovery_block": "3-4 min easy jog or walk recovery step",
+        "cooldown": "5-10 min easy jog, then 3-5 min slow breathing"
+      },
+      "source_rationale": "Longer intervals at a 1:1 work-to-rest ratio hold the heart near maximum output for longer total time with lower hamstring strain than short sprints."
+    },
+    {
+      "rule_id": "resistance_weekly_split",
+      "category": "strength",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "3",
+        "duration_minutes": {
+          "min": 50,
+          "max": 60
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Session 1: legs (quads, hamstrings, calves). Session 2: torso push and pull plus neck. Session 3: arms, calves, neck, with dips and chin-ups for indirect torso work"
+      },
+      "biomechanical_constraint": "Each muscle group is trained directly once and indirectly once per week; bodyweight sessions substitute into these 3 slots rather than adding extra sessions.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min: light cardio plus 2-3 ramp-up sets of the first exercise",
+        "work_block": "One open-goal work step per set (WorkoutKit has no rep goal; exercise name and rep target live in the step title)",
+        "recovery_block": "Time-goal recovery step between sets, length set by the active schedule",
+        "cooldown": "3-5 min slow breathing or physiological sighs"
+      },
+      "source_rationale": "Three sessions split by body region give every muscle one direct and one indirect stimulus per week with adequate recovery between them."
+    },
+    {
+      "rule_id": "schedule_a_heavy_month",
+      "category": "strength",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "schedule_a_strength",
+      "parameters": {
+        "frequency_per_week": "3",
+        "duration_minutes": {
+          "min": 50,
+          "max": 60
+        },
+        "sets": {
+          "min": 3,
+          "max": 4
+        },
+        "reps": {
+          "min": 4,
+          "max": 8
+        },
+        "rest_seconds": {
+          "min": 120,
+          "max": 240
+        },
+        "intensity_target": "Heavy load; the last rep of each set is hard but clean"
+      },
+      "biomechanical_constraint": "For bodyweight work, add load or pick a harder leverage variation to stay inside 4-8 reps.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min, including 2-3 progressively heavier warm-up sets",
+        "work_block": "Open-goal work step per set, named with exercise and rep target",
+        "recovery_block": "2-4 min time-goal recovery step",
+        "cooldown": "3-5 min slow breathing or physiological sighs"
+      },
+      "source_rationale": "Heavy loads with long rests favor neural and strength adaptations because full recovery between sets keeps force output high."
+    },
+    {
+      "rule_id": "schedule_b_moderate_month",
+      "category": "hypertrophy",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "schedule_b_hypertrophy",
+      "parameters": {
+        "frequency_per_week": "3",
+        "duration_minutes": {
+          "min": 50,
+          "max": 60
+        },
+        "sets": {
+          "min": 2,
+          "max": 3
+        },
+        "reps": {
+          "min": 8,
+          "max": 15
+        },
+        "rest_seconds": {
+          "min": 90,
+          "max": 90
+        },
+        "intensity_target": "Moderate load; sets end at or near failure with controlled technique"
+      },
+      "biomechanical_constraint": "Reduce load if 90-second rest prevents controlled execution.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min, including 1-2 lighter warm-up sets",
+        "work_block": "Open-goal work step per set, named with exercise and rep target",
+        "recovery_block": "90 s time-goal recovery step",
+        "cooldown": "3-5 min slow breathing or physiological sighs"
+      },
+      "source_rationale": "Moderate loads with shorter rests raise metabolic stress and total time under tension, favoring hypertrophy."
+    },
+    {
+      "rule_id": "galpin_3_to_5_strength_option",
+      "category": "strength",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "schedule_a_strength",
+      "parameters": {
+        "frequency_per_week": "3 in this plan (Galpin allows 3-5), with 3-5 exercises per session",
+        "duration_minutes": {
+          "min": 50,
+          "max": 60
+        },
+        "sets": {
+          "min": 3,
+          "max": 5
+        },
+        "reps": {
+          "min": 3,
+          "max": 5
+        },
+        "rest_seconds": {
+          "min": 180,
+          "max": 300
+        },
+        "intensity_target": "Strength: 85% 1RM or heavier. Power: 30-70% 1RM moved with maximum concentric speed"
+      },
+      "biomechanical_constraint": "Compound multi-joint lifts only. Stop each set with 1-2 clean reps left; never grind. With 3-5 min rests, 3-4 exercises is the practical limit inside the 50-60 min cap.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min, including 2-3 progressively heavier warm-up sets",
+        "work_block": "Open-goal work step per set, named with exercise and rep target",
+        "recovery_block": "3-5 min time-goal recovery step",
+        "cooldown": "3-5 min slow breathing or physiological sighs"
+      },
+      "source_rationale": "Very low reps with full rest train the nervous system to recruit more motor units at high force or high speed without excessive muscle damage."
+    },
+    {
+      "rule_id": "monthly_schedule_alternation",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Switch between Schedule A and Schedule B every 4 weeks",
+        "duration_minutes": null,
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Month 1 = Schedule A, Month 2 = Schedule B, repeat; galpin_3_to_5_strength_option may replace Schedule A in any heavy month"
+      },
+      "biomechanical_constraint": "Keep exercise selection consistent across the switch so only load, reps, and rest change.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Unchanged",
+        "work_block": "Regenerate rep targets and set counts from the active schedule",
+        "recovery_block": "Regenerate recovery step length from the active schedule",
+        "cooldown": "Unchanged"
+      },
+      "source_rationale": "Alternating heavy and moderate blocks monthly keeps both strength and hypertrophy progressing and prevents plateaus."
+    },
+    {
+      "rule_id": "weekly_set_volume",
+      "category": "hypertrophy",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Per muscle group: 5 hard sets to maintain, 10-15 to grow",
+        "duration_minutes": null,
+        "sets": {
+          "min": 5,
+          "max": 15
+        },
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "30-80% 1RM, with most sets stopping 1-2 reps short of failure"
+      },
+      "biomechanical_constraint": "Count direct sets fully; count indirect work (such as chin-ups for biceps or dips for chest/triceps) toward the weekly total.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Not applicable",
+        "work_block": "Scheduler checks weekly set totals per muscle before emitting sessions",
+        "recovery_block": "Not applicable",
+        "cooldown": "Not applicable"
+      },
+      "source_rationale": "Weekly hard-set count per muscle is the primary driver of hypertrophy, with a low floor for maintenance."
+    },
+    {
+      "rule_id": "shortened_lengthened_pairing",
+      "category": "hypertrophy",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Every resistance session",
+        "duration_minutes": null,
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Two exercises per directly trained muscle group"
+      },
+      "biomechanical_constraint": "Pair 1 movement loaded in the shortened (peak-contraction) position with 1 loaded in the lengthened (stretched) position. Examples: leg extension + squat/hack squat; leg curl + RDL; seated calf raise + standing calf raise; cable crossover + incline press; preacher curl + incline dumbbell curl.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Ramp-up sets on the first exercise of each pair",
+        "work_block": "Two consecutive exercise groups per muscle, each as its own interval block",
+        "recovery_block": "Recovery step per the active schedule",
+        "cooldown": "Not applicable"
+      },
+      "source_rationale": "Loading a muscle at both ends of its range covers the full length-tension curve for a more complete stimulus."
+    },
+    {
+      "rule_id": "session_time_cap",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight",
+        "running",
+        "golf_practice"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Every hard session",
+        "duration_minutes": {
+          "min": 50,
+          "max": 60
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "5-10 min warm-up, then 50-60 min of hard work; 75 min total appointment time is the outer ceiling"
+      },
+      "biomechanical_constraint": "Trim lower-priority accessory sets before shortening prescribed rest intervals.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min, not counted against the 60 min work cap",
+        "work_block": "Sum of work and recovery steps must not exceed 60 min",
+        "recovery_block": "Counted against the 60 min cap",
+        "cooldown": "3-5 min downshift, not counted against the work cap"
+      },
+      "source_rationale": "Hard work beyond ~60 minutes elevates cortisol and lengthens recovery without adding proportional adaptation."
+    },
+    {
+      "rule_id": "inter_set_physiological_sigh",
+      "category": "recovery",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Optional at the start of resistance rest intervals",
+        "duration_minutes": null,
+        "sets": {
+          "min": 1,
+          "max": 1
+        },
+        "reps": {
+          "min": 1,
+          "max": 3
+        },
+        "rest_seconds": null,
+        "intensity_target": "One comfortable nasal inhale, a second smaller top-up inhale, and a prolonged unforced mouth exhale"
+      },
+      "biomechanical_constraint": "Perform only after safely racking/securing the load; resume normal breathing afterward.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Not applicable",
+        "work_block": "Not an additional work step",
+        "recovery_block": "Embed cue inside the existing rest interval without shortening the rest timer",
+        "cooldown": "Use post_workout_downshift separately"
+      },
+      "source_rationale": "1-3 physiological sighs between sets rapidly down-regulate heart rate and restore focus for the next heavy set."
+    },
+    {
+      "rule_id": "post_workout_downshift",
+      "category": "recovery",
+      "modality_applicability": [
+        "running",
+        "weight_lifting",
+        "bodyweight",
+        "golf",
+        "golf_practice",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "After every training session (mandatory; never dropped to save time)",
+        "duration_minutes": {
+          "min": 3,
+          "max": 5
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Slow, exhale-emphasized breathing or repeated physiological sighs (double inhale through the nose, long exhale through the mouth)"
+      },
+      "biomechanical_constraint": "After high-HR running, walk until breathing settles before starting seated/lying breathwork; stop deliberate breath manipulation if lightheaded.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Not applicable",
+        "work_block": "Not applicable",
+        "recovery_block": "Not applicable",
+        "cooldown": "3-5 min time-goal cooldown step labelled 'Physiological Sighs Downshift'"
+      },
+      "source_rationale": "Long exhales stimulate the vagus nerve to slow heart rate and shift the autonomic nervous system from sympathetic drive into recovery."
+    },
+    {
+      "rule_id": "cyclic_sighing_daily",
+      "category": "recovery",
+      "modality_applicability": [
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "7",
+        "duration_minutes": {
+          "min": 5,
+          "max": 5
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Continuous physiological sighs at a relaxed pace"
+      },
+      "biomechanical_constraint": null,
+      "workoutkit_segment_mapping": {
+        "warmup": "None",
+        "work_block": "5 min time-goal step, mindAndBody or flexibility activity type",
+        "recovery_block": "None",
+        "cooldown": "None"
+      },
+      "source_rationale": "Five minutes daily of exhale-weighted cyclic sighing lowers resting respiratory rate and improves mood and autonomic tone."
+    },
+    {
+      "rule_id": "nsdr_session",
+      "category": "recovery",
+      "modality_applicability": [
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "As needed, up to daily; prioritize after poor sleep or the hardest training days",
+        "duration_minutes": {
+          "min": 10,
+          "max": 30
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Guided non-sleep deep rest or yoga nidra, lying still"
+      },
+      "biomechanical_constraint": "NSDR does not count toward aerobic Zone 2, resistance volume, or static stretching exposure.",
+      "workoutkit_segment_mapping": {
+        "warmup": "None",
+        "work_block": "10-30 min time-goal step",
+        "recovery_block": "None",
+        "cooldown": "None"
+      },
+      "source_rationale": "Guided non-sleep deep rest restores mental and physical energy and partly offsets sleep deficits."
+    },
+    {
+      "rule_id": "static_stretching_protocol",
+      "category": "mobility",
+      "modality_applicability": [
+        "yoga_stretching",
+        "golf"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "3 minimum, ~10 minutes each (5+ accumulated min/week per muscle group); 5-7 short sessions for faster range gains",
+        "duration_minutes": {
+          "min": 10,
+          "max": 15
+        },
+        "sets": {
+          "min": 2,
+          "max": 4
+        },
+        "reps": {
+          "min": 1,
+          "max": 1
+        },
+        "rest_seconds": {
+          "min": 10,
+          "max": 30
+        },
+        "intensity_target": "30 s static holds at low intensity (about 30-40% of the point of pain), never bouncing"
+      },
+      "biomechanical_constraint": "Stretch warm: after a workout or after 5-10 min of easy movement. Never schedule long static holds right before heavy lifting, sprinting, or full-swing golf.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5 min easy movement if standalone",
+        "work_block": "Interval block per muscle group, 2-4 iterations: 30 s time-goal hold",
+        "recovery_block": "10-30 s recovery step between holds",
+        "cooldown": "3-5 min slow breathing"
+      },
+      "source_rationale": "Range of motion gains are driven by total weekly hold time (>=5 min/muscle) distributed across frequent, low-intensity sessions."
+    },
+    {
+      "rule_id": "mcgill_big_3_core",
+      "category": "strength",
+      "modality_applicability": [
+        "bodyweight",
+        "golf",
+        "weight_lifting"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Daily, or at minimum before each resistance and golf session",
+        "duration_minutes": {
+          "min": 8,
+          "max": 12
+        },
+        "sets": {
+          "min": 3,
+          "max": 3
+        },
+        "reps": {
+          "min": 2,
+          "max": 6
+        },
+        "rest_seconds": {
+          "min": 20,
+          "max": 30
+        },
+        "intensity_target": "10 s isometric holds per rep, descending pyramid (6, 4, 2 reps)"
+      },
+      "biomechanical_constraint": "Three movements only: modified curl-up, side plank (both sides), bird dog (both sides). Keep spine neutral; progress via reps, never holds longer than 10 s.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Runs as the warm-up of a resistance or golf session, or standalone",
+        "work_block": "Three interval blocks (one per movement), 3 iterations each, open-goal work step",
+        "recovery_block": "20-30 s recovery step between sets",
+        "cooldown": "None when used as warmup; 3-5 min downshift if standalone"
+      },
+      "source_rationale": "Short repeated isometric holds build proximal trunk stiffness that protects the lumbar spine and transfers force between hips and shoulders."
+    },
+    {
+      "rule_id": "neck_training",
+      "category": "strength",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "2",
+        "duration_minutes": {
+          "min": 3,
+          "max": 5
+        },
+        "sets": {
+          "min": 2,
+          "max": 3
+        },
+        "reps": {
+          "min": 10,
+          "max": 15
+        },
+        "rest_seconds": {
+          "min": 60,
+          "max": 90
+        },
+        "intensity_target": "Light load, slow and controlled; flexion, extension, and lateral flexion"
+      },
+      "biomechanical_constraint": "Attach to the torso session and the arms session; never train to failure.",
+      "workoutkit_segment_mapping": {
+        "warmup": "None",
+        "work_block": "Final interval block of the host session",
+        "recovery_block": "60-90 s recovery step",
+        "cooldown": "Host session cooldown"
+      },
+      "source_rationale": "Neck strength supports upright posture and stabilizes the cervical and upper thoracic spine under load."
+    },
+    {
+      "rule_id": "weekly_template_and_spacing",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "running",
+        "weight_lifting",
+        "bodyweight",
+        "golf",
+        "golf_practice",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "7-day base template: D1 long Zone 2, D2 legs, D3 recovery (heat/cold, stretching), D4 torso + neck, D5 moderate cardio, D6 HIIT/intervals, D7 arms + calves + neck",
+        "duration_minutes": null,
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Any session may slide one day earlier or later to accommodate golf or life constraints"
+      },
+      "biomechanical_constraint": "Keep at least 48 hours between hard leg lifting and HIIT/interval running. Never place two resistance sessions for the same region on consecutive days. Do not stack two hard sessions to catch up after a missed day.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Not applicable",
+        "work_block": "Scheduler-level rule governing day assignment",
+        "recovery_block": "Not applicable",
+        "cooldown": "Not applicable"
+      },
+      "source_rationale": "Spacing local muscular and systemic CNS stressors allows tissue repair and glycogen restoration before reloading the same system."
+    },
+    {
+      "rule_id": "cold_and_heat_exposure",
+      "category": "recovery",
+      "modality_applicability": [
+        "weight_lifting",
+        "bodyweight",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "1 dedicated recovery day; weekly targets of ~11 min cold and ~57 min sauna",
+        "duration_minutes": {
+          "min": 20,
+          "max": 75
+        },
+        "sets": {
+          "min": 3,
+          "max": 5
+        },
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Rounds of ~20 min sauna followed by 2-5 min cold immersion"
+      },
+      "biomechanical_constraint": "No cold-water immersion within 4 hours after a strength or hypertrophy lifting session.",
+      "workoutkit_segment_mapping": {
+        "warmup": "None",
+        "work_block": "Non-WorkoutKit recovery block; emit in app schedule metadata",
+        "recovery_block": "Not applicable",
+        "cooldown": "None"
+      },
+      "source_rationale": "Cold immersion immediately post-lifting blunts mTOR and inflammatory signaling needed for hypertrophy and strength gains."
+    },
+    {
+      "rule_id": "golf_rotational_power_block",
+      "category": "strength",
+      "modality_applicability": [
+        "golf",
+        "weight_lifting"
+      ],
+      "periodization_phase": "schedule_a_strength",
+      "parameters": {
+        "frequency_per_week": "1-2, placed first inside the torso session and optionally the leg session",
+        "duration_minutes": {
+          "min": 10,
+          "max": 20
+        },
+        "sets": {
+          "min": 3,
+          "max": 5
+        },
+        "reps": {
+          "min": 3,
+          "max": 5
+        },
+        "rest_seconds": {
+          "min": 180,
+          "max": 300
+        },
+        "intensity_target": "Explosive intent on every rep with a light-to-moderate implement (30-70% max); stop the set if velocity drops"
+      },
+      "biomechanical_constraint": "Rotational medicine-ball scoop/shot-put throws, cable/band explosive chops and lifts, both sides. Perform while fresh before heavy lifting; drop one accessory lift to stay inside the 60 min cap.",
+      "workoutkit_segment_mapping": {
+        "warmup": "McGill Big 3 plus host session warm-up",
+        "work_block": "First interval block of the host session, open-goal work step per set",
+        "recovery_block": "3-5 min recovery step",
+        "cooldown": "Host session cooldown"
+      },
+      "source_rationale": "Applies Galpin's power parameters (low reps, explosive intent, full rest) to maximize clubhead speed without neural fatigue."
+    },
+    {
+      "rule_id": "golf_rotational_control_block",
+      "category": "hypertrophy",
+      "modality_applicability": [
+        "golf",
+        "weight_lifting",
+        "bodyweight"
+      ],
+      "periodization_phase": "schedule_b_hypertrophy",
+      "parameters": {
+        "frequency_per_week": "1-2, placed inside the torso session and optionally the leg session",
+        "duration_minutes": {
+          "min": 8,
+          "max": 12
+        },
+        "sets": {
+          "min": 2,
+          "max": 3
+        },
+        "reps": {
+          "min": 8,
+          "max": 15
+        },
+        "rest_seconds": {
+          "min": 90,
+          "max": 90
+        },
+        "intensity_target": "Controlled tempo; resist rotation and build hip/trunk stability"
+      },
+      "biomechanical_constraint": "Anti-rotation Pallof presses, half-kneeling cable chops, single-leg RDLs, and side-plank variations. Counts against the 60 min session cap.",
+      "workoutkit_segment_mapping": {
+        "warmup": "McGill Big 3 plus host session warm-up",
+        "work_block": "Interval block inside the host session, open-goal work step per set",
+        "recovery_block": "90 s recovery step",
+        "cooldown": "Host session cooldown"
+      },
+      "source_rationale": "Uses the higher-rep hypertrophy phase to build the eccentric trunk and hip deceleration control that supports high-speed golf swings."
+    },
+    {
+      "rule_id": "golf_mobility_targets",
+      "category": "mobility",
+      "modality_applicability": [
+        "golf",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "3 minimum (inside static_stretching_protocol sessions); 5-7 for faster range gains",
+        "duration_minutes": {
+          "min": 10,
+          "max": 15
+        },
+        "sets": {
+          "min": 2,
+          "max": 4
+        },
+        "reps": {
+          "min": 1,
+          "max": 1
+        },
+        "rest_seconds": {
+          "min": 10,
+          "max": 30
+        },
+        "intensity_target": "30 s static holds at low intensity (30-40% of point of pain)"
+      },
+      "biomechanical_constraint": "Target areas: thoracic rotation, hip internal/external rotation, hip flexors, lats, and posterior shoulder (both lead and trail sides). Schedule post-round or evenings, never pre-round.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5 min easy movement if standalone",
+        "work_block": "Interval block per target area, 2-4 iterations: 30 s time-goal hold",
+        "recovery_block": "10-30 s recovery step",
+        "cooldown": "3-5 min slow breathing"
+      },
+      "source_rationale": "Applies Huberman's weekly static hold threshold specifically to the thoracic, hip, and shoulder ranges that govern golf turn and sequencing."
+    },
+    {
+      "rule_id": "golf_pre_round_warmup",
+      "category": "mobility",
+      "modality_applicability": [
+        "golf",
+        "golf_practice"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Before every round and every full-swing range session",
+        "duration_minutes": {
+          "min": 5,
+          "max": 10
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Progressive dynamic activation building from wedges to full driver speed"
+      },
+      "biomechanical_constraint": "McGill Big 3 (1 set each), dynamic hip/thoracic rotations, then progressive swings from half to full speed. No static holds longer than 10 s.",
+      "workoutkit_segment_mapping": {
+        "warmup": "5-10 min time-goal warm-up step",
+        "work_block": "Golf activity type: open-goal for rounds, or segmented 10-min skill blocks for practice",
+        "recovery_block": "None for rounds; 60-120 s between practice skill blocks",
+        "cooldown": "3-5 min slow breathing, followed by golf_mobility_targets if desired"
+      },
+      "source_rationale": "Prepares spinal stiffness and rotational range dynamically without inducing the acute stretch-induced power loss caused by long static holds."
+    },
+    {
+      "rule_id": "golf_load_accounting",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "golf",
+        "golf_practice",
+        "running",
+        "weight_lifting"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "At most 2 full-swing range sessions and 1-2 rounds per week; putting/short game is unrestricted",
+        "duration_minutes": {
+          "min": 30,
+          "max": 60
+        },
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "Full-swing range session = hard CNS session; putting/chipping = low-strain skill; walked round = aerobic volume"
+      },
+      "biomechanical_constraint": "Cap full-swing range sessions at 50-60 min. Never schedule full-swing practice within 24 hours after a Schedule A torso session or on the HIIT day. In a 2-round week, drop moderate_cardio_tempo before dropping resistance sessions.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Per golf_pre_round_warmup",
+        "work_block": "Golf activity type (or functionalStrengthTraining if watchOS restricts multi-step golf blocks)",
+        "recovery_block": "60-120 s between 10-min skill blocks during practice",
+        "cooldown": "3-5 min slow breathing after full-swing practice or rounds"
+      },
+      "source_rationale": "High-velocity driver and iron swings tax the same thoracic, hip, and central nervous system pathways as heavy torso training."
+    },
+    {
+      "rule_id": "readiness_override_and_return_to_training",
+      "category": "scheduling_guardrail",
+      "modality_applicability": [
+        "running",
+        "weight_lifting",
+        "bodyweight",
+        "golf",
+        "golf_practice",
+        "yoga_stretching"
+      ],
+      "periodization_phase": "all",
+      "parameters": {
+        "frequency_per_week": "Assess before every session",
+        "duration_minutes": null,
+        "sets": null,
+        "reps": null,
+        "rest_seconds": null,
+        "intensity_target": "When substantially fatigued or sleep-deprived, cut volume by ~50% or swap for NSDR/mobility; skip training when ill"
+      },
+      "biomechanical_constraint": "Pain or deteriorating swing/lifting mechanics overrides completion targets; after illness, ramp volume back up over 3-7 days rather than stacking missed workouts.",
+      "workoutkit_segment_mapping": {
+        "warmup": "Reassess movement quality and readiness",
+        "work_block": "Emit a reduced-volume session or replace with nsdr_session",
+        "recovery_block": "Keep full prescribed rest intervals even when cutting total sets",
+        "cooldown": "3-5 min slow breathing"
+      },
+      "source_rationale": "Adjusting load around acute fatigue and illness prevents overtraining and injury while preserving long-term consistency."
+    }
+  ]
+}
