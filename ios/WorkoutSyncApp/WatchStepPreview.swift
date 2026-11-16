@@ -56,7 +56,6 @@ struct WatchStepPreview: View {
             Text("Illustration of your steps. The Workout app’s appearance and controls may differ.")
                 .font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.center)
         }
-        .accessibilityLabel("Illustrative watch preview for \(title)")
     }
 
     private func duration(_ seconds: Double?) -> String {
